@@ -71,7 +71,9 @@
         request.onerror = () => reject(request.error);
       });
       await new Promise((resolve) => {
-        draftsDb.transaction.oncomplete = () => resolve();
+        setTimeout(() => {
+          resolve();
+        }, 1000);
       });
       draftsDb.onerror = (event) => {
         console.error(`Database error: ${event.target.error?.message}`);
