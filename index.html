@@ -102,9 +102,8 @@
     async function persist4() {
       // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
       await persist(); // << pede a permissao pra salvar mais seguramente
-      const draftsBucket = await indexedDB.open('drafts', Date.now()); // usar versionamento melhor que Date.now()
       const draftsDb = await new Promise((resolve, reject) => {
-        const request = draftsBucket.indexedDB.open("messages");
+        const request = indexedDB.open("drafts2", Date.now());
         let objectStore;
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
