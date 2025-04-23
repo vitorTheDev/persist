@@ -109,7 +109,7 @@
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
           console.log('upgrading!', db, arguments);
-          objectStore = draftsDb.createObjectStore("customers", { keyPath: "id" });
+          objectStore = db.createObjectStore("customers", { keyPath: "id" });
           objectStore.createIndex("name", "name", { unique: false });
           objectStore.createIndex("email", "email", { unique: true });
         };
