@@ -70,7 +70,7 @@
       const draftsDb = await new Promise((resolve, reject) => {
         const request = draftsBucket.indexedDB.open("messages", Date.now()); // usar versionamento melhor que Date.now()
         let objectStore;
-        request.onupgradeneeded = (event) => {
+        request.onupgradeneeded = (event, ...rest) => {
           const db = event.target.result;
           console.log('upgrading!', db, event, rest);
           if (!db.version) {
