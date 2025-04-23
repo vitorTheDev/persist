@@ -60,15 +60,15 @@
       }
       const draftsDb = await new Promise(resolve => {
         const request = draftsBucket.indexedDB.open("messages");
+        let objectStore;
         request.onupgradeneeded = () => {
           console.log('upgrading!');
-          const objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
+          objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
           objectStore.createIndex("name", "name", { unique: false });
           objectStore.createIndex("email", "email", { unique: true });
         };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
-
       });
       await new Promise((resolve) => {
         objectStore.transaction.oncomplete = () => resolve();
