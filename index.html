@@ -71,8 +71,8 @@
         const request = draftsBucket.indexedDB.open("messages", Date.now()); // usar versionamento melhor que Date.now()
         let objectStore;
         request.onupgradeneeded = (event) => {
-          console.log('upgrading!', db, event, rest);
           const db = event.target.result;
+          console.log('upgrading!', db, event, rest);
           if (!db.version) {
             objectStore = db.createObjectStore("customers", { keyPath: "id" });
             objectStore.createIndex("name", "name", { unique: false });
@@ -91,8 +91,8 @@
         console.error(`Database error: ${event.target.error?.message}`);
       };
       const customerData = [
-        { id: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
-        { id: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+        { id: crypto.randomUUID(), name: "Bill", age: 35, email: "bill@company.com" },
+        { id: crypto.randomUUID(), name: "Donna", age: 32, email: "donna@home.org" },
       ];
       const customerObjectStore = draftsDb.transaction("customers", "readwrite")
         .objectStore("customers");
@@ -128,8 +128,8 @@
         console.error(`Database error: ${event.target.error?.message}`);
       };
       const customerData = [
-        { id: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
-        { id: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+        { id: crypto.randomUUID(), name: "Bill", age: 35, email: "bill@company.com" },
+        { id: crypto.randomUUID(), name: "Donna", age: 32, email: "donna@home.org" },
       ];
       const customerObjectStore = draftsDb.transaction("customers", "readwrite")
         .objectStore("customers");
