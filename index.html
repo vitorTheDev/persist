@@ -67,7 +67,7 @@
       if ((await draftsBucket.persisted()) !== true) {
         alert("Your drafts may be lost if you run out of disk space!");
       }
-      const draftsDb = await new Promise(resolve => {
+      const draftsDb = await new Promise((resolve, reject) => {
         const request = draftsBucket.indexedDB.open("messages", Date.now()); // usar versionamento melhor que Date.now()
         let objectStore;
         request.onupgradeneeded = (event) => {
@@ -106,8 +106,9 @@
       const draftsDb = await new Promise((resolve, reject) => {
         const request = draftsBucket.indexedDB.open("messages");
         let objectStore;
-        request.onupgradeneeded = () => {
-          console.log('upgrading!', request, arguments);
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          console.log('upgrading!', db, arguments);
           objectStore = draftsDb.createObjectStore("customers", { keyPath: "id" });
           objectStore.createIndex("name", "name", { unique: false });
           objectStore.createIndex("email", "email", { unique: true });
