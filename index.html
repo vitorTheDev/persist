@@ -74,7 +74,7 @@
         request.onupgradeneeded = (event, ...rest) => {
           const db = event.target.result;
           console.log('upgrading!', db, event, rest);
-          if (!db.oldVersion) {
+          if (!event.oldVersion) {
             objectStore = db.createObjectStore("customers", { keyPath: "id" });
             objectStore.createIndex("name", "name", { unique: false });
             // objectStore.createIndex("email", "email", { unique: true });
@@ -107,7 +107,7 @@
         request.onupgradeneeded = (event, ...rest) => {
           const db = event.target.result;
           console.log('upgrading!', db, event, rest);
-          if (!db.oldVersion) {
+          if (!event.oldVersion) {
             objectStore = db.createObjectStore("customers", { keyPath: "id" });
             objectStore.createIndex("name", "name", { unique: false });
             // objectStore.createIndex("email", "email", { unique: true });
