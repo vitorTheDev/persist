@@ -60,6 +60,7 @@
 
     async function persist3() {
       // https://wicg.github.io/storage-buckets/explainer#setting-up-buckets
+      await persist(); // << pede a permissao pra salvar mais seguramente
       const draftsBucket = await navigator.storageBuckets.open('drafts', {
         durability: 'strict', // Or `'relaxed'`.
         persisted: true, // Or `false`.
@@ -94,6 +95,7 @@
       customerData.forEach((customer) => {
         customerObjectStore.add(customer);
       });
+      await estimate();
     }
 
     async function persist4() {
