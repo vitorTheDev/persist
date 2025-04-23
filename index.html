@@ -8,10 +8,11 @@
 </head>
 
 <body>
-  <button onclick="backup()">BACKUP!</button>
-  <button onclick="persist()">PERSIST!</button>
-  <button onclick="persist2()">PERSIST2!</button>
-  <button onclick="persist3()">PERSIST!3</button>
+  <button onclick="backup()">Directory Picker</button>
+  <button onclick="persist()">storage.persist</button>
+  <button onclick="persist2()">OPFS</button>
+  <button onclick="persist4()">indexedDB</button>
+  <button onclick="persist3()">storage buckets</button>
   <script>
     async function backup() {
       const dirHandle = await window.showDirectoryPicker({
@@ -52,6 +53,46 @@
     async function persist3() {
       // https://wicg.github.io/storage-buckets/explainer#setting-up-buckets
       const draftsBucket = await navigator.storageBuckets.open('drafts', {
+        durability: 'strict', // Or `'relaxed'`.
+        persisted: true, // Or `false`.
+      });
+      if ((await draftsBucket.persisted()) !== true) {
+        alert("Your drafts may be lost if you run out of disk space!");
+      }
+      const draftsDb = await new Promise(resolve => {
+        const request = draftsBucket.indexedDB.open("messages");
+        let objectStore;
+        request.onupgradeneeded = () => {
+          console.log('upgrading!');
+          objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
+          objectStore.createIndex("name", "name", { unique: false });
+          objectStore.createIndex("email", "email", { unique: true });
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 1000);
+      });
+      draftsDb.onerror = (event) => {
+        console.error(`Database error: ${event.target.error?.message}`);
+      };
+      const customerData = [
+        { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+        { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+      ];
+      const customerObjectStore = draftsDb.transaction("customers", "readwrite")
+        .objectStore("customers");
+      customerData.forEach((customer) => {
+        customerObjectStore.add(customer);
+      });
+    }
+
+    async function persist4() {
+      // https://wicg.github.io/storage-buckets/explainer#setting-up-buckets
+      const draftsBucket = await navigator.indexedDB.open('drafts', {
         durability: 'strict', // Or `'relaxed'`.
         persisted: true, // Or `false`.
       });
