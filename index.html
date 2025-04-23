@@ -40,6 +40,7 @@
     async function persist2() {
       const storageDir = await navigator.storage.getDirectory();
       console.log('name' + storageDir.name);
+      const filename = `bkp-${new Date().toJSON()}.json`.replace(/:/g, '-');
       const storageFile = await storageDir.getFileHandle(filename, { create: true });
       const storageFileWrite = await storageFile.createWritable();
       await storageFileWrite.write(JSON.stringify({ teste: 123, 'olá': 'mundãoç' }, null, 2));
