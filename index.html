@@ -68,9 +68,10 @@
       const draftsDb = await new Promise(resolve => {
         const request = draftsBucket.indexedDB.open("messages", Date.now());
         let objectStore;
-        request.onupgradeneeded = () => {
+        request.onupgradeneeded = (event) => {
           console.log('upgrading!');
-          objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
+          const db = event.target.result;
+          objectStore = db.createObjectStore("customers", { keyPath: "customers" });
           objectStore.createIndex("name", "name", { unique: false });
           objectStore.createIndex("email", "email", { unique: true });
         };
@@ -98,10 +99,8 @@
 
     async function persist4() {
       // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+      await persist();
       const draftsBucket = await indexedDB.open('drafts', Date.now());
-      if ((await draftsBucket.persisted()) !== true) {
-        alert("Your drafts may be lost if you run out of disk space!");
-      }
       const draftsDb = await new Promise(resolve => {
         const request = draftsBucket.indexedDB.open("messages");
         let objectStore;
