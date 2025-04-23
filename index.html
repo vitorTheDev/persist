@@ -41,7 +41,7 @@
 
     async function estimate() {
       const available = await navigator.storage.estimate();
-      alert(((estimate.usage / estimate.quota) * 100).toFixed(2) + '%  -  ' + ((estimate.quota / 1024 / 1024) * 100).toFixed(2) + 'MB');
+      alert(((available.usage / available.quota) * 100).toFixed(2) + '%  -  ' + ((available.quota / 1024 / 1024) * 100).toFixed(2) + 'MB');
     }
 
     async function persist2() {
