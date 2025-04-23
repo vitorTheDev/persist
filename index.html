@@ -10,6 +10,7 @@
 <body>
   <button onclick="backup()">Directory Picker</button>
   <button onclick="persist()">storage.persist</button>
+  <button onclick="estimate()">estimate</button>
   <button onclick="persist2()">OPFS</button>
   <button onclick="persist4()">indexedDB</button>
   <button onclick="persist3()">storage buckets</button>
@@ -36,6 +37,11 @@
       } else {
         alert('sorry =(')
       }
+    }
+
+    async function estimate() {
+      const available = await navigator.storage.estimate();
+      alert(((estimate.usage / estimate.quota) * 100).toFixed(2) + '%  -  ' + ((estimate.quota / 1024 / 1024) * 100).toFixed(2) + 'MB');
     }
 
     async function persist2() {
