@@ -68,12 +68,12 @@
         alert("Your drafts may be lost if you run out of disk space!");
       }
       const draftsDb = await new Promise(resolve => {
-        const request = draftsBucket.indexedDB.open("messages", Date.now());
+        const request = draftsBucket.indexedDB.open("messages", Date.now()); // usar versionamento melhor que Date.now()
         let objectStore;
         request.onupgradeneeded = (event) => {
           console.log('upgrading!');
           const db = event.target.result;
-          objectStore = db.createObjectStore("customers", { keyPath: "customers" });
+          objectStore = db.createObjectStore("customers", { keyPath: "id" });
           objectStore.createIndex("name", "name", { unique: false });
           objectStore.createIndex("email", "email", { unique: true });
         };
@@ -89,8 +89,8 @@
         console.error(`Database error: ${event.target.error?.message}`);
       };
       const customerData = [
-        { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
-        { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+        { id: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+        { id: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
       ];
       const customerObjectStore = draftsDb.transaction("customers", "readwrite")
         .objectStore("customers");
@@ -102,13 +102,13 @@
     async function persist4() {
       // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
       await persist(); // << pede a permissao pra salvar mais seguramente
-      const draftsBucket = await indexedDB.open('drafts', Date.now());
+      const draftsBucket = await indexedDB.open('drafts', Date.now()); // usar versionamento melhor que Date.now()
       const draftsDb = await new Promise(resolve => {
         const request = draftsBucket.indexedDB.open("messages");
         let objectStore;
         request.onupgradeneeded = () => {
           console.log('upgrading!');
-          objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
+          objectStore = draftsDb.createObjectStore("customers", { keyPath: "id" });
           objectStore.createIndex("name", "name", { unique: false });
           objectStore.createIndex("email", "email", { unique: true });
         };
@@ -124,8 +124,8 @@
         console.error(`Database error: ${event.target.error?.message}`);
       };
       const customerData = [
-        { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
-        { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+        { id: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+        { id: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
       ];
       const customerObjectStore = draftsDb.transaction("customers", "readwrite")
         .objectStore("customers");
