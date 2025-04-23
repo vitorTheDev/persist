@@ -71,7 +71,7 @@
         request.onerror = () => reject(request.error);
       });
       await new Promise((resolve) => {
-        objectStore.transaction.oncomplete = () => resolve();
+        draftsDb.transaction.oncomplete = () => resolve();
       });
       draftsDb.onerror = (event) => {
         console.error(`Database error: ${event.target.error?.message}`);
