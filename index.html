@@ -71,11 +71,13 @@
         const request = draftsBucket.indexedDB.open("messages", Date.now()); // usar versionamento melhor que Date.now()
         let objectStore;
         request.onupgradeneeded = (event) => {
-          console.log('upgrading!');
+          console.log('upgrading!', db, event, rest);
           const db = event.target.result;
-          objectStore = db.createObjectStore("customers", { keyPath: "id" });
-          objectStore.createIndex("name", "name", { unique: false });
-          objectStore.createIndex("email", "email", { unique: true });
+          if (!db.version) {
+            objectStore = db.createObjectStore("customers", { keyPath: "id" });
+            objectStore.createIndex("name", "name", { unique: false });
+            objectStore.createIndex("email", "email", { unique: true });
+          }
         };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
@@ -105,12 +107,14 @@
       const draftsDb = await new Promise((resolve, reject) => {
         const request = indexedDB.open("drafts2", Date.now());
         let objectStore;
-        request.onupgradeneeded = (event) => {
+        request.onupgradeneeded = (event, ...rest) => {
           const db = event.target.result;
-          console.log('upgrading!', db, arguments);
-          objectStore = db.createObjectStore("customers", { keyPath: "id" });
-          objectStore.createIndex("name", "name", { unique: false });
-          objectStore.createIndex("email", "email", { unique: true });
+          console.log('upgrading!', db, event, rest);
+          if (!db.version) {
+            objectStore = db.createObjectStore("customers", { keyPath: "id" });
+            objectStore.createIndex("name", "name", { unique: false });
+            objectStore.createIndex("email", "email", { unique: true });
+          }
         };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
