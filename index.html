@@ -66,7 +66,7 @@
         alert("Your drafts may be lost if you run out of disk space!");
       }
       const draftsDb = await new Promise(resolve => {
-        const request = draftsBucket.indexedDB.open("messages");
+        const request = draftsBucket.indexedDB.open("messages", Date.now());
         let objectStore;
         request.onupgradeneeded = () => {
           console.log('upgrading!');
@@ -98,10 +98,7 @@
 
     async function persist4() {
       // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
-      const draftsBucket = await indexedDB.open('drafts', {
-        durability: 'strict', // Or `'relaxed'`.
-        persisted: true, // Or `false`.
-      });
+      const draftsBucket = await indexedDB.open('drafts', Date.now());
       if ((await draftsBucket.persisted()) !== true) {
         alert("Your drafts may be lost if you run out of disk space!");
       }
