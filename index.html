@@ -45,6 +45,8 @@
       const storageFileWrite = await storageFile.createWritable();
       await storageFileWrite.write(JSON.stringify({ teste: 123, 'olá': 'mundãoç' }, null, 2));
       await storageFileWrite.close();
+      const file = await storageFile.getFile();
+      console.log('leu:',await file.text());
     }
 
     async function persist3() {
