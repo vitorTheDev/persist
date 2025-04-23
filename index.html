@@ -138,8 +138,192 @@
       });
       await estimate();
     }
-
   </script>
+
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Storage Persistence Guide</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        color: #333;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+      }
+
+      h1 {
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+
+      h2 {
+        margin-top: 30px;
+        color: #2980b9;
+      }
+
+      h3 {
+        color: #16a085;
+      }
+
+      code {
+        background-color: #f8f9fa;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      pre {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #3498db;
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .note {
+        background-color: #e3f2fd;
+        border-left: 4px solid #3498db;
+        padding: 15px;
+        margin: 20px 0;
+      }
+
+      .warning {
+        background-color: #fff3e0;
+        border-left: 4px solid #ffa000;
+        padding: 15px;
+        margin: 20px 0;
+      }
+    </style>
+    <h1>Web Storage Persistence Guide</h1>
+
+    <h2>Criteria for <code>storage.persist()</code> Approval</h2>
+    <p>Browsers grant persistent storage based on these factors:</p>
+
+    <h3>1. User Engagement</h3>
+    <ul>
+      <li>Frequent visits (bookmarked, added to home screen)</li>
+      <li>Regular interaction (push notifications enabled, high engagement)</li>
+    </ul>
+
+    <h3>2. Installation Status (PWA)</h3>
+    <p>Progressive Web Apps are more likely to get persistent storage.</p>
+
+    <h3>3. Web Standards Compliance</h3>
+    <ul>
+      <li>HTTPS required (no persistence on HTTP)</li>
+      <li>Good performance and non-abusive behavior</li>
+    </ul>
+
+    <h3>4. Prior Storage Usage</h3>
+    <p>Sites that previously stored data responsibly are more trusted.</p>
+
+    <h3>5. User Permissions</h3>
+    <p>Some browsers may prompt users for permission.</p>
+
+    <div class="note">
+      <h3>How to Check & Request Persistent Storage</h3>
+      <pre><code>// Check if storage is already persistent
+const isPersisted = await navigator.storage.persisted();
+console.log("Already persistent?", isPersisted);
+
+// Request persistent storage
+const persisted = await navigator.storage.persist();
+if (persisted) {
+  console.log("Storage will not be cleared automatically!");
+} else {
+  console.log("Storage may be cleared under storage pressure.");
+}</code></pre>
+    </div>
+
+    <div class="warning">
+      <h3>If <code>persist()</code> is Denied</h3>
+      <p>Your storage may be cleared when:</p>
+      <ul>
+        <li>User manually clears site data</li>
+        <li>Browser needs space (low storage conditions)</li>
+        <li>Site is rarely used</li>
+      </ul>
+    </div>
+
+    <h2>Best Practices for Reliable Storage</h2>
+    <ol>
+      <li><strong>Request early</strong> - Call <code>persist()</code> when your app loads</li>
+      <li><strong>Handle storage loss</strong> - Assume data could disappear</li>
+      <li><strong>Monitor quota</strong> - Use <code>StorageManager.estimate()</code></li>
+      <li><strong>Implement server sync</strong> - For truly critical data</li>
+    </ol>
+
+    <h2>Browser Differences</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Browser</th>
+          <th>Default Behavior</th>
+          <th>User Prompt?</th>
+          <th>PWA Bonus?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Chrome</strong></td>
+          <td>Auto-grants based on heuristics</td>
+          <td>❌ No</td>
+          <td>✅ Higher chance</td>
+        </tr>
+        <tr>
+          <td><strong>Firefox</strong></td>
+          <td>May prompt user</td>
+          <td>✅ Sometimes</td>
+          <td>❌ No special treatment</td>
+        </tr>
+        <tr>
+          <td><strong>Safari</strong></td>
+          <td>Very restrictive</td>
+          <td>❌ No</td>
+          <td>❌ No special treatment</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Conclusion</h2>
+    <ul>
+      <li><code>storage.persist()</code> improves retention but isn't foolproof</li>
+      <li>High-engagement sites and PWAs get better persistence</li>
+      <li>Always design for storage loss - users can always clear data</li>
+    </ul>
 </body>
 
 </html>
