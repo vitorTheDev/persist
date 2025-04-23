@@ -46,7 +46,7 @@
       await storageFileWrite.write(JSON.stringify({ teste: 123, 'olá': 'mundãoç' }, null, 2));
       await storageFileWrite.close();
       const file = await storageFile.getFile();
-      console.log('leu:',await file.text());
+      console.log('leu:', await file.text());
     }
 
     async function persist3() {
@@ -62,13 +62,14 @@
         const request = draftsBucket.indexedDB.open("messages");
         request.onupgradeneeded = () => {
           console.log('upgrading!');
+          const objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
+          objectStore.createIndex("name", "name", { unique: false });
+          objectStore.createIndex("email", "email", { unique: true });
         };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
+
       });
-      const objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
-      objectStore.createIndex("name", "name", { unique: false });
-      objectStore.createIndex("email", "email", { unique: true });
       await new Promise((resolve) => {
         objectStore.transaction.oncomplete = () => resolve();
       });
