@@ -89,7 +89,7 @@
         { id: crypto.randomUUID(), name: "Bill", age: 35, email: "bill@company.com" },
         { id: crypto.randomUUID(), name: "Donna", age: 32, email: "donna@home.org" },
       ];
-      const customerObjectStore = draftsDb.transaction("messages", "readwrite")
+      const customerObjectStore = draftsDb.transaction("customers", "readwrite")
         .objectStore("customers");
       customerData.forEach((customer) => {
         customerObjectStore.add(customer);
