@@ -45,6 +45,7 @@
     }
 
     async function persist2() {
+      await persist(); // << pede a permissao pra salvar mais seguramente
       const storageDir = await navigator.storage.getDirectory();
       console.log(storageDir);
       const filename = `bkp-${new Date().toJSON()}.json`.replace(/:/g, '-');
@@ -54,6 +55,7 @@
       await storageFileWrite.close();
       const file = await storageFile.getFile();
       console.log('leu:', await file.text());
+      await estimate();
     }
 
     async function persist3() {
@@ -99,7 +101,7 @@
 
     async function persist4() {
       // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
-      await persist();
+      await persist(); // << pede a permissao pra salvar mais seguramente
       const draftsBucket = await indexedDB.open('drafts', Date.now());
       const draftsDb = await new Promise(resolve => {
         const request = draftsBucket.indexedDB.open("messages");
@@ -130,6 +132,7 @@
       customerData.forEach((customer) => {
         customerObjectStore.add(customer);
       });
+      await estimate();
     }
 
   </script>
