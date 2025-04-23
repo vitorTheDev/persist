@@ -76,7 +76,7 @@
           if (!db.version) {
             objectStore = db.createObjectStore("customers", { keyPath: "id" });
             objectStore.createIndex("name", "name", { unique: false });
-            objectStore.createIndex("email", "email", { unique: true });
+            // objectStore.createIndex("email", "email", { unique: true });
           }
         };
         request.onsuccess = () => resolve(request.result);
@@ -113,7 +113,7 @@
           if (!db.version) {
             objectStore = db.createObjectStore("customers", { keyPath: "id" });
             objectStore.createIndex("name", "name", { unique: false });
-            objectStore.createIndex("email", "email", { unique: true });
+            // objectStore.createIndex("email", "email", { unique: true });
           }
         };
         request.onsuccess = () => resolve(request.result);
