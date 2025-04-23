@@ -97,8 +97,8 @@
     }
 
     async function persist4() {
-      // https://wicg.github.io/storage-buckets/explainer#setting-up-buckets
-      const draftsBucket = await navigator.indexedDB.open('drafts', {
+      // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+      const draftsBucket = await indexedDB.open('drafts', {
         durability: 'strict', // Or `'relaxed'`.
         persisted: true, // Or `false`.
       });
