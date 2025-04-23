@@ -82,11 +82,6 @@
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
       });
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 1000);
-      });
       draftsDb.onerror = (event) => {
         console.error(`Database error: ${event.target.error?.message}`);
       };
@@ -94,7 +89,7 @@
         { id: crypto.randomUUID(), name: "Bill", age: 35, email: "bill@company.com" },
         { id: crypto.randomUUID(), name: "Donna", age: 32, email: "donna@home.org" },
       ];
-      const customerObjectStore = draftsDb.transaction("customers", "readwrite")
+      const customerObjectStore = draftsDb.transaction("messages", "readwrite")
         .objectStore("customers");
       customerData.forEach((customer) => {
         customerObjectStore.add(customer);
