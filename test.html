@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <button onclick="backup()">BACKUP!</button>
+  <button onclick="persist()">PERSIST!</button>
+  <button onclick="persist2()">PERSIST2!</button>
+  <button onclick="persist3()">PERSIST!3</button>
+  <script>
+    async function backup() {
+      const dirHandle = await window.showDirectoryPicker({
+        mode: 'read',
+        startIn: 'downloads',
+      });
+
+      const pastaSistema = await dirHandle.getDirectoryHandle('sistema', { create: true });
+      const filename = `bkp-${new Date().toJSON()}.json`.replace(/:/g, '-');
+      console.log(filename);
+      const backupHandle = await pastaSistema.getFileHandle(filename, { create: true });
+      const backupFile = await backupHandle.createWritable();
+      await backupFile.write(JSON.stringify({ teste: 123, 'olá': 'mundãoç' }, null, 2));
+      await backupFile.close();
+      alert('fim!');
+    }
+    async function persist() {
+      const persisted = await navigator.storage.persist();
+      if (persisted) {
+        alert('yaay')
+      } else {
+        alert('sorry =(')
+      }
+    }
+
+    async function persist2() {
+      const storageDir = await navigator.storage.getDirectory();
+      console.log('name' + storageDir.name);
+      const storageFile = await storageDir.getFileHandle(filename, { create: true });
+      const storageFileWrite = await storageFile.createWritable();
+      await storageFileWrite.write(JSON.stringify({ teste: 123, 'olá': 'mundãoç' }, null, 2));
+      await storageFileWrite.close();
+    }
+
+    async function persist3() {
+      // https://wicg.github.io/storage-buckets/explainer#setting-up-buckets
+      const draftsBucket = await navigator.storageBuckets.open('drafts', {
+        durability: 'strict', // Or `'relaxed'`.
+        persisted: true, // Or `false`.
+      });
+      if ((await draftsBucket.persisted()) !== true) {
+        alert("Your drafts may be lost if you run out of disk space!");
+      }
+      const draftsDb = await new Promise(resolve => {
+        const request = draftsBucket.indexedDB.open("messages");
+        request.onupgradeneeded = () => {
+          console.log('upgrading!');
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const objectStore = draftsDb.createObjectStore("customers", { keyPath: "customers" });
+      objectStore.createIndex("name", "name", { unique: false });
+      objectStore.createIndex("email", "email", { unique: true });
+      await new Promise((resolve) => {
+        objectStore.transaction.oncomplete = () => resolve();
+      });
+      draftsDb.onerror = (event) => {
+        console.error(`Database error: ${event.target.error?.message}`);
+      };
+      const customerData = [
+        { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+        { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+      ];
+      const customerObjectStore = draftsDb.transaction("customers", "readwrite")
+        .objectStore("customers");
+      customerData.forEach((customer) => {
+        customerObjectStore.add(customer);
+      });
+    }
+
+  </script>
+</body>
+
+</html>
